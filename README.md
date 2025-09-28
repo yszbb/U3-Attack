@@ -14,4 +14,15 @@ cd U3-Attack
 pip install -r requirements.txt
 ```
 
+## Citation
 
+If you use this code in your research, please cite our paper:
+
+```bibtex
+@article{yan2025universally,
+  title={Universally Unfiltered and Unseen: Input-Agnostic Multimodal Jailbreaks against Text-to-Image Model Safeguards},
+  author={Yan, Song and Wei, Hui and Fei, Jinlong and Yang, Guoliang and Zhao, Zhengyu and Wamg, Zheng},
+  journal={arXiv preprint arXiv:2508.05658},
+  year={2025}
+}
+```

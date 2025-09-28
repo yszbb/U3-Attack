@@ -8,11 +8,38 @@ Official Pytorch implementation for our ACM MM 2025 paper [Universally Unfiltere
 - Pytorch 2.3.1
 - At least 1x24GB NVIDIA GPU
 ## Installation
+
+1. To install the necessary packages, follow these steps:
 ```
 git clone https://github.com/yszbb/U3-Attack
 cd U3-Attack
 pip install -r requirements.txt
 ```
+   
+2. Download the necessary T2I models, follow these codes:
+   ```bash
+   mkdir checkpoints
+   cd checkpoints
+   git-lfs install
+   git clone https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-inpainting
+   ```
+   
+   ```python
+   from diffusers import StableDiffusionInpaintPipeline
+   
+   pipe_inpaint = StableDiffusionInpaintPipeline.from_pretrained(
+       "/checkpoints/stable-diffusion-inpainting"
+   ).to(device)
+   ```
+
+3. Download the necessary datasets, follow these codes:
+   ```bash
+   mkdir checkpoints
+   cd checkpoints
+   git-lfs install
+   git clone https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-inpainting
+   ```
+
 
 ## Citation
 

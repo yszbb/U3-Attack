@@ -15,7 +15,6 @@ git clone https://github.com/yszbb/U3-Attack
 cd U3-Attack
 pip install -r requirements.txt
 ```
-   
 2. Download the necessary T2I models, follow these codes:
    ```bash
    mkdir checkpoints
@@ -31,7 +30,6 @@ pip install -r requirements.txt
        "/checkpoints/stable-diffusion-inpainting"
    ).to(device)
    ```
-
 3. Download the necessary datasets, follow these codes:
    ```bash
    mkdir checkpoints

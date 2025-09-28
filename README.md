@@ -5,12 +5,12 @@ Official Pytorch implementation for our ACM MM 2025 paper [Universally Unfiltere
 
 ## Requirements
 - python 3.8
-- Pytorch 1.13
-- At least 1x12GB NVIDIA GPU
+- Pytorch 2.3.1
+- At least 1x24GB NVIDIA GPU
 ## Installation
 ```
-git clone https://github.com/yszbb/AE-Patch
-cd AE-Patch
+git clone https://github.com/yszbb/U3-Attack
+cd U3-Attack
 pip install -r requirements.txt
 ```
 ## Preparation

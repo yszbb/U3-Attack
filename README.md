@@ -55,13 +55,13 @@ cd universal-image-attack
 
 # Download datasets:
 
-# Phase I:
+# Period One:
 # Due to sensitive content, this dataset is not publicly available.
 # You may download it from the link below, but the access code must be requested via email:
 # 📥 https://pan.baidu.com/s/1PXgs_5kMV8HXgxzaepHcbg
 # Please contact 📧 yan61255873@163.com to request the extraction code.
 
-# Phase II:
+# Period Two:
 # Publicly available dataset:
 # 📥 https://pan.baidu.com/s/1OpbRNweuG_ATDwvzjOzodQ?pwd=ys66
 # Access code: ys66
@@ -97,12 +97,18 @@ We provide two datasets for reproduction and evaluation:
 
 ## Usage
 
-### 1. Generate NSFW concept
+### 1. Train Paraphrase Set
 
 First, generate the NSFW concept for your target concept:
 
 ```bash
 python vec_gen.py --concept nudity --version 1-5-inpaint --dtype float16
+```
+### 3. Evaluate Paraphrase Set
+
+#### For Inpainting Models:
+```bash
+python test_total_UMMA.py 
 ```
 
 ### 2. Train Adversarial Patch

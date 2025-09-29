@@ -15,12 +15,14 @@ Official Pytorch implementation for our ACM MM 2025 paper [Universally Unfiltere
    cd U3-Attack
    pip install -r requirements.txt
    ```
-2. Download the necessary T2I models, follow these codes:
+2. Download the necessary models, follow these codes:
    ```bash
    mkdir checkpoints
    cd checkpoints
    git-lfs install
    git clone https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-inpainting
+   git clone https://huggingface.co/openai/clip-vit-base-patch32
+   download ViT-L-14.pt: https://pan.baidu.com/s/12R7RpUf2XsiNUgLDOW8LxA?pwd=ys66
    ```
    
    ```python

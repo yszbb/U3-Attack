@@ -1,8 +1,10 @@
+absl-py==2.3.1
 accelerate==1.0.1
 certifi==2025.4.26
 charset-normalizer==3.4.2
 colorama==0.4.6
 coloredlogs==15.0.1
+contextlib2==21.6.0
 contourpy==1.1.1
 cycler==0.12.1
 debugpy==1.8.14
@@ -28,6 +30,7 @@ markdown-it-py==3.0.0
 MarkupSafe==2.1.5
 matplotlib==3.7.5
 mdurl==0.1.2
+ml_collections==0.1.1
 mpmath==1.3.0
 networkx==3.1
 nudenet==3.4.2

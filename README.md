@@ -83,6 +83,32 @@ pipe_inpaint = StableDiffusionInpaintPipeline.from_pretrained(
 
 ---
 
+## 📁 Image Modality Directory Structure
+
+The `universal-image-attack` folder contains the following structure:
+
+```
+universal-image-attack/
+├── __pycache__/
+├── data/
+├── data_patch/
+├── heuristic_candidate_set/
+├── log/
+├── results/
+├── results_period_one/
+├── weights/
+├── config.py
+├── dataloader.py
+├── recover_img.py
+├── save_white_box.py
+├── test_total_UMMA.py
+├── train_patch_period_one.py
+├── train_patch_period_two.py
+└── utils.py
+```
+
+---
+
 ## 🧪 Usage
 
 ### 📝 Textual Modality

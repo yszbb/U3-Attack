@@ -11,7 +11,8 @@ Official PyTorch implementation of our **ACM MM 2025** paper:
 
 ## 📌 Overview
 
-**U3-Attack** introduces a universal, input-agnostic multimodal jailbreak method that bypasses safeguards in text-to-image generation models.  
+**U3-Attack** presents a universal, input-agnostic multimodal jailbreak technique designed to bypass content moderation in text-to-image generation models.  
+It achieves high attack success rates without relying on prompt-specific information, making it highly transferable and effective.
 
 ---
 
@@ -42,7 +43,7 @@ git clone https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-inpainti
 git clone https://huggingface.co/openai/clip-vit-base-patch32
 
 # Download ViT-L/14 weights (Baidu Netdisk)
-# Link: https://pan.baidu.com/s/12R7RpUf2XsiNUgLDOW8LxA?pwd=ys66
+# 📥 https://pan.baidu.com/s/12R7RpUf2XsiNUgLDOW8LxA?pwd=ys66
 ```
 
 3. **Download attack weights and datasets:**
@@ -50,19 +51,18 @@ git clone https://huggingface.co/openai/clip-vit-base-patch32
 ```bash
 cd universal-image-attack
 
-# Download model weights
-# Link: https://pan.baidu.com/s/1cjtFmK8hqLcXLCUAFrKyZA?pwd=ys66
+# Download model weights:
+# 📥 https://pan.baidu.com/s/1cjtFmK8hqLcXLCUAFrKyZA?pwd=ys66
 
 # Download datasets:
 
 # Period One:
 # Due to sensitive content, this dataset is not publicly available.
-# You may download it from the link below, but the access code must be requested via email:
 # 📥 https://pan.baidu.com/s/1PXgs_5kMV8HXgxzaepHcbg
-# Please contact 📧 yan61255873@163.com to request the extraction code.
+# Please contact 📧 yan61255873@163.com to request the access code.
 
 # Period Two:
-# Publicly available dataset:
+# Publicly available:
 # 📥 https://pan.baidu.com/s/1OpbRNweuG_ATDwvzjOzodQ?pwd=ys66
 # Access code: ys66
 ```
@@ -71,51 +71,63 @@ cd universal-image-attack
 
 ```python
 from diffusers import StableDiffusionInpaintPipeline
+import torch
 
 pipe_inpaint = StableDiffusionInpaintPipeline.from_pretrained(
-    "/checkpoints/stable-diffusion-inpainting"
+    "../checkpoints/stable-diffusion-inpainting",
+    revision="fp16",
+    torch_dtype=torch.float16,
+    safety_checker=None  # Disable built-in safety checker
 ).to(device)
 ```
+
 ---
 
+## 🧪 Usage
 
-## Usage
+### 📝 Textual Modality
 
-### Textual Modality
-#### 1. Train Paraphrase Set
+**1. Train the Paraphrase Set:**
 
 ```bash
 python train_universal_paraphrase.py
 ```
-#### 2. Evaluate Paraphrase Set
+
+**2. Evaluate the Paraphrase Set:**
 
 ```bash
 python sd_test.py
 ```
 
-### Image Modality
-#### 1. Train Adversarial Patch
+---
 
-##### Period One:
+### 🖼️ Image Modality
+
+**1. Train the Adversarial Patch**
+
+- **Period One:**
+
 ```bash
 python train_patch_period_one.py
 ```
 
-##### Period Two:
+- **Period Two:**
+
 ```bash
 python train_patch_period_two.py --iter 10 --epsl2 16.0 -s 3 -n 4
 ```
 
-#### 2. Evaluate Patch Performance
+**2. Evaluate Patch Performance (Inpainting Models):**
 
-#### For Inpainting Models:
 ```bash
-python test_total_UMMA.py 
+python test_total_UMMA.py
 ```
+
+---
 
 ## 📚 Citation
 
-If you find our work helpful, please cite the following paper:
+If you find our work useful, please consider citing:
 
 ```bibtex
 @article{yan2025universally,
@@ -128,8 +140,7 @@ If you find our work helpful, please cite the following paper:
 
 ---
 
-
 ## ✉️ Contact
 
-For questions, please contact:  
+If you have any questions, feel free to reach out:  
 📧 **yan61255873@163.com**

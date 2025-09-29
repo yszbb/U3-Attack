@@ -12,7 +12,6 @@ Official PyTorch implementation of our **ACM MM 2025** paper:
 ## 📌 Overview
 
 **U3-Attack** introduces a universal, input-agnostic multimodal jailbreak method that bypasses safeguards in text-to-image generation models.  
-Our approach achieves state-of-the-art performance against widely used safety filters without requiring prior knowledge of input prompts.
 
 ---
 
@@ -46,7 +45,7 @@ git clone https://huggingface.co/openai/clip-vit-base-patch32
 # Link: https://pan.baidu.com/s/12R7RpUf2XsiNUgLDOW8LxA?pwd=ys66
 ```
 
-3. **Download attack weights:**
+3. **Download weights:**
 
 ```bash
 cd universal-image-attack

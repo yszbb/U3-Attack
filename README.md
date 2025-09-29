@@ -46,7 +46,7 @@ git clone https://huggingface.co/openai/clip-vit-base-patch32
 # 📥 https://pan.baidu.com/s/12R7RpUf2XsiNUgLDOW8LxA?pwd=ys66
 ```
 
-3. **Download attack weights and datasets:**
+3. **Download model weights and datasets:**
 
 ```bash
 cd universal-image-attack
@@ -56,12 +56,12 @@ cd universal-image-attack
 
 # Download datasets:
 
-# Period One:
+# Period one datasets:
 # Due to sensitive content, this dataset is not publicly available.
 # 📥 https://pan.baidu.com/s/1PXgs_5kMV8HXgxzaepHcbg
 # Please contact 📧 yan61255873@163.com to request the access code.
 
-# Period Two:
+# Period two datasets:
 # Publicly available:
 # 📥 https://pan.baidu.com/s/1OpbRNweuG_ATDwvzjOzodQ?pwd=ys66
 # Access code: ys66

@@ -73,13 +73,14 @@ We provide two datasets for reproduction and evaluation:
 
 - **Phase I:**  
   Due to sensitive content, this dataset is **not publicly available**.  
-  Please contact us via email at 📧 **yan61255873@163.com** to request access.
+  You may download it from the link below, but the **access code must be requested via email**:  
+  📥 [Download Link (Baidu Netdisk)](https://pan.baidu.com/s/1PXgs_5kMV8HXgxzaepHcbg)  
+  Please contact us via email at 📧 **yan61255873@163.com** to request the extraction code.
 
 - **Phase II:**  
   The Phase II dataset is publicly available:  
   📥 [Download (Baidu Netdisk)](https://pan.baidu.com/s/1OpbRNweuG_ATDwvzjOzodQ?pwd=ys66)  
   Access code: `ys66`
-
 ---
 
 ## 📚 Citation

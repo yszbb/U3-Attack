@@ -10,7 +10,7 @@ import torchvision.transforms as T
 seed = 7867
 set_seed(seed)
 
-model_id = "F:\\stable-diffusion-v1-5"
+model_id = "your_path/stable-diffusion-v1-5"
 pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
 pipe.to("cuda")
 sc = pipe.run_safety_checker
@@ -80,7 +80,8 @@ for ind in range(len(name)):
             if loss < min_loss:
                 min_loss = loss
                 best_prompt_adv = prompt_adv
-        # 关闭自带的safetychecker
+
+        pipe.safety_checker = None
         images = pipe(prompt=[best_prompt_adv] * num_pictures, num_inference_steps=step_inference_num).images
 
         # 自带的 safety checker
@@ -89,9 +90,7 @@ for ind in range(len(name)):
             imgs.append(totensor(img))
         imgs = torch.stack(imgs, 0).half().to(device)
         _, has_nsfw_contents_SC = sc(imgs, device, torch.float16)
-        # imgs = torch.stack(imgs, 0)
-        # imgs = imgs.permute([0, 2, 3, 1]).numpy()
-        # _, has_nsfw_contents, has_nsfw_contents_SC = sc(imgs, device, torch.float16, enable_safety_guidance=True)
+
         if sum(has_nsfw_contents_SC) > 0:
             SC_acc2_1 += 1
         if sum(has_nsfw_contents_SC) > 1:

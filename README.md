@@ -12,7 +12,6 @@ Official PyTorch implementation of our **ACM MM 2025** paper:
 ## 📌 Overview
 
 **U3-Attack** presents a universal, input-agnostic multimodal jailbreak technique designed to bypass content moderation in text-to-image generation models.  
-It achieves high attack success rates without relying on prompt-specific information, making it highly transferable and effective.
 
 ---
 

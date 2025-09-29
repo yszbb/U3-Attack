@@ -94,6 +94,74 @@ We provide two datasets for reproduction and evaluation:
   Access code: `ys66`
 ---
 
+
+## Usage
+
+### 1. Generate NSFW concept
+
+First, generate the NSFW concept for your target concept:
+
+```bash
+python vec_gen.py --concept nudity --version 1-5-inpaint --dtype float16
+```
+
+### 2. Train Adversarial Generators
+
+#### For Inpainting Models:
+```bash
+python opt_generator_inpaint.py \
+    --ddim_steps 8 \
+    --tar_steps 8 \
+    --strength 1 \
+    --vec_scale 2.5 \
+    --concept nudity \
+    --mask_dir img_clothes_masks \
+    --version 1-5-inpaint \
+    --dtype float16 \
+    --epoch 100 \
+    --lr 1e-5 \
+    --eps 64/255 \
+    --loss_type mse \
+    --prefix ""
+```
+
+#### For P2P Models:
+```bash
+python opt_generator_p2p.py \
+    --ddim_steps 8 \
+    --tar_steps 8 \
+    --strength 1 \
+    --vec_scale 2.5 \
+    --concept nudity \
+    --version p2p \
+    --dtype float16 \
+    --epoch 100 \
+    --lr 1e-5 \
+    --eps 64/255 \
+    --loss_type mse \
+    --prefix ""
+```
+
+### 3. Evaluate Attack Performance
+
+#### For Inpainting Models:
+```bash
+python eval_generator_inpaint.py \
+    --ddim_steps 8 \
+    --tar_steps 8 \
+    --strength 1 \
+    --vec_scale 2.5 \
+    --concept nudity \
+    --mask_dir img_clothes_masks \
+    --version 1-5-inpaint \
+    --dtype float16 \
+    --lr 1e-5 \
+    --eps 64/255 \
+    --loss_type mse \
+    --prefix "eval_gen_time" \
+    --ckpt your_checkpoint
+```
+
 ## 📚 Citation
 
 If you find our work helpful, please cite the following paper:

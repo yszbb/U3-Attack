@@ -105,61 +105,23 @@ First, generate the NSFW concept for your target concept:
 python vec_gen.py --concept nudity --version 1-5-inpaint --dtype float16
 ```
 
-### 2. Train Adversarial Generators
+### 2. Train Adversarial Patch
+
+#### Period One:
+```bash
+python train_patch_period_one.py
+```
+
+#### Period Two:
+```bash
+python train_patch_period_two.py --iter 10 --epsl2 16.0 -s 3 -n 4
+```
+
+### 3. Evaluate Patch Performance
 
 #### For Inpainting Models:
 ```bash
-python opt_generator_inpaint.py \
-    --ddim_steps 8 \
-    --tar_steps 8 \
-    --strength 1 \
-    --vec_scale 2.5 \
-    --concept nudity \
-    --mask_dir img_clothes_masks \
-    --version 1-5-inpaint \
-    --dtype float16 \
-    --epoch 100 \
-    --lr 1e-5 \
-    --eps 64/255 \
-    --loss_type mse \
-    --prefix ""
-```
-
-#### For P2P Models:
-```bash
-python opt_generator_p2p.py \
-    --ddim_steps 8 \
-    --tar_steps 8 \
-    --strength 1 \
-    --vec_scale 2.5 \
-    --concept nudity \
-    --version p2p \
-    --dtype float16 \
-    --epoch 100 \
-    --lr 1e-5 \
-    --eps 64/255 \
-    --loss_type mse \
-    --prefix ""
-```
-
-### 3. Evaluate Attack Performance
-
-#### For Inpainting Models:
-```bash
-python eval_generator_inpaint.py \
-    --ddim_steps 8 \
-    --tar_steps 8 \
-    --strength 1 \
-    --vec_scale 2.5 \
-    --concept nudity \
-    --mask_dir img_clothes_masks \
-    --version 1-5-inpaint \
-    --dtype float16 \
-    --lr 1e-5 \
-    --eps 64/255 \
-    --loss_type mse \
-    --prefix "eval_gen_time" \
-    --ckpt your_checkpoint
+python test_total_UMMA.py 
 ```
 
 ## 📚 Citation

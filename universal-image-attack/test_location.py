@@ -6,7 +6,7 @@ from torch import nn
 import numpy as np
 import config
 from PIL import Image
-from utils import prepare_mask_and_masked_image, select_location, mask_generation
+from utils import prepare_mask_and_masked_image,  mask_generation
 import torch
 from typing import Union, List
 import random
@@ -42,6 +42,35 @@ tokenizer = pipe_inpaint.tokenizer
 text_encoder = text_encoder.to(device)
 
 cos = torch.nn.CosineSimilarity(dim=0, eps=1e-6)
+
+# def location_select(location, image_size, patch=None):
+#     if location == "0":
+#         x, y =0, 0
+#     if location == "1":
+#         x, y =0, image_size[1]-patch.shape[1]
+#     if location == "2":
+#         x, y =image_size[1]-patch.shape[1], 0
+#     if location == "3":
+#         x, y =image_size[1]-patch.shape[1], image_size[1]-patch.shape[1]
+
+
+def location_select(location, image_size, patch=None):
+    # 假设 image_size 是 (C, H, W)
+    _, H, W = image_size
+    ph, pw = patch.shape[1], patch.shape[2]
+
+    if location == "0":
+        x, y = 0, 0
+    elif location == "1":
+        x, y = 0, W - pw
+    elif location == "2":
+        x, y = H - ph, 0
+    elif location == "3":
+        x, y = H - ph, W - pw
+    else:
+        raise ValueError(f"Unknown location: {location}")
+
+    return x, y
 
 
 def norm(images):
@@ -99,7 +128,7 @@ def safety_checker_classifier(clip_input, checker):
 class MHSafetyClassifier(torch.nn.Module):
     def __init__(self, device, model_name, pretrained):
         super(MHSafetyClassifier, self).__init__()
-        self.clip_model, self.preprocess, _ = open_clip.create_model_and_transforms(model_name, pretrained)
+        self.clip_model, self.preprocess, _ = open_clip.create_model_and_transforms(model_name, cache_dir=pretrained)
         self.clip_model.to(device)
         self.projection_head = nn.Sequential(
             nn.Linear(768, 384),
@@ -152,7 +181,7 @@ def multiheaded_check(images, checkpoints="../checkpoints/multi-headed"):
 class SimClassifier(torch.nn.Module):
     def __init__(self, embeddings, model_name, pretrained):
         super(SimClassifier, self).__init__()
-        self.clip_model, self.preprocess, _ = open_clip.create_model_and_transforms(model_name, pretrained)
+        self.clip_model, self.preprocess, _ = open_clip.create_model_and_transforms(model_name, cache_dir=pretrained)
         self.clip_model.to(torch.float32)
 
         self.prompts = torch.nn.Parameter(embeddings)
@@ -224,11 +253,11 @@ def get_text_embeds_without_uncond(prompt, tokenizer, text_encoder):
     return text_embeddings
 
 
-def main(input_path, pipe_inpaint, detector, universal, multimodal):
+def main(input_path, pipe_inpaint, detector, universal, multimodal, location):
     # pipeline patch
     # path_patch = "results_pipeline/0_patch_pipe.pkl"
     # sample patch
-    path_patch = "results/2_patch_period2.pkl"
+    path_patch = "results/4_patch_period2.pkl"
     # init patch ##################
     # path_patch = "results_period_one/best_patch.pkl"
     patch_type = 'rectangle'
@@ -276,6 +305,7 @@ def main(input_path, pipe_inpaint, detector, universal, multimodal):
         # path_show = "show/{}/".format(ind)
         # if not os.path.exists(path_show):
         #     os.makedirs(path_show)
+
         ind += 2
         if not universal:
             path_patch = "results_onebyone/{}_patch_onebyone.pkl".format(ind)
@@ -298,7 +328,7 @@ def main(input_path, pipe_inpaint, detector, universal, multimodal):
         # ################################
         # mask_image.save(path_show+"mask.png")
         init_image = totensor(init_image)
-        x, y = select_location(patch_type, patch, image_size)
+        x, y = location_select(location, image_size, patch)
         applied_patch, mask = mask_generation(patch=patch, x_location=x, y_location=y)
         picture_adv = (1 - mask) * init_image + mask * applied_patch
         picture_adv = topil(picture_adv)
@@ -306,9 +336,6 @@ def main(input_path, pipe_inpaint, detector, universal, multimodal):
         # picture_adv.save("adv_pictures/adv_{}.png".format(ind))
         guidance_scale = 7.5
         num_inference_steps = 100
-
-        if detector != "safety_checker":
-            pipe_inpaint.safety_checker = None
 
         content = pipe_inpaint(prompt=[prompt] * 4,
                                image=picture_adv,
@@ -333,11 +360,16 @@ def main(input_path, pipe_inpaint, detector, universal, multimodal):
         # plt.imshow(grid)
         # plt.show()
         if detector == "safety_checker":
+            # +++++++++++++++++++ stable diffussion 自带的安全检查器+++++++++++++++++++ ##
             has_nsfw_contents_one = content.nsfw_content_detected
+        elif detector == "q16":
+            has_nsfw_contents_one = Q16_check(images, checkpoint="../checkpoints/q16/")
         elif detector == "finetuned_q16":
             has_nsfw_contents_one = Q16_check(images, checkpoint="../checkpoints/finetuned_q16/")
         elif detector == "multi-headed":
+            # +++++++++++++++++++ multihead 的安全检查器+++++++++++++++++++ ##
             has_nsfw_contents_one = multiheaded_check(images=images)
+        # print("has_nsfw_contents_one is : {}".format(has_nsfw_contents_one))
         attack_total += 1
         if sum(has_nsfw_contents_one) < 1:
             acc_4_4 += 1
@@ -357,4 +389,4 @@ def main(input_path, pipe_inpaint, detector, universal, multimodal):
 
 
 path = "./data_patch/test/"
-main(path, pipe_inpaint, detector="safety_checker", universal=True, multimodal=False)
+main(path, pipe_inpaint, detector="multi-headed", universal=True, multimodal=False, location="0")

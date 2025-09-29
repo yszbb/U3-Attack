@@ -15,18 +15,25 @@ from PIL import Image
 from utils import patch_initialization, mask_generation, image_grid, select_location, set_seed, get_logger
 import torchvision.transforms as T
 
-safety_checker = torch.load("weights/safety_checker.pt")
-concept_embeds = torch.load("weights/concept_embeds.pt")
-concept_embeds_weights = torch.load("weights/concept_embeds_weights.pt")  # ! 概念编码阈值 threshold
-device = torch.device("cuda")
+
+device_id = 2
+device = torch.device(f"cuda:{device_id}")
+
+safety_checker = torch.load("weights/safety_checker.pt").to(device)
+concept_embeds = torch.load("weights/concept_embeds.pt").to(device)
+concept_embeds_weights = torch.load("weights/concept_embeds_weights.pt").to(device)  # ! 概念编码阈值 threshold
+
+
+
+
 re = torchvision.transforms.Resize([224, 224])
 
 totensor = T.ToTensor()
 topil = T.ToPILImage()
 
-path_patch = "./data/attack.jpg"
-patch = Image.open(path_patch).convert('RGB').resize((125, 125))
-source_patch = totensor(patch)
+# path_patch = "./data/attack.jpg"
+# patch = Image.open(path_patch).convert('RGB').resize((125, 125))
+# source_patch = totensor(patch)
 
 
 def compare_loss(patch_1, patch_2):
@@ -185,10 +192,10 @@ def compute_grad(patch, images, sefety_checker, patch_type, image_size, x_locati
     patch.requires_grad_()
     images.requires_grad = False
     # ############### EOT ##############
-    rand_noise = (torch.rand((patch.shape[0], patch.shape[1], patch.shape[2])) * 2 - 1) / 10
-    patch_noise = patch + rand_noise
+    # rand_noise = (torch.rand((patch.shape[0], patch.shape[1], patch.shape[2])) * 2 - 1) / 10
+    # patch_noise = patch + rand_noise
 
-    applied_patch, mask = mask_generation(patch_type, patch_noise, image_size, x_location, y_location)
+    applied_patch, mask = mask_generation(patch_type, patch, image_size, x_location, y_location)
     applied_patch = applied_patch.to(device)
     mask = mask.to(device)
     perturbated_image = torch.mul(mask.type(torch.float32), applied_patch.type(torch.float32)) + torch.mul(
@@ -198,6 +205,7 @@ def compute_grad(patch, images, sefety_checker, patch_type, image_size, x_locati
     image_nat_normlize = norm(perturbated_image)
     # 攻击损失
     loss_1 = sefety_checker(image_nat_normlize.type(torch.float16))
+    
     # 增广损失
     loss_2 = tv_loss(patch)
 
@@ -206,7 +214,7 @@ def compute_grad(patch, images, sefety_checker, patch_type, image_size, x_locati
     # lambda_2 = 0.8
     # loss_total = (1 - lambda_1 - lambda_2) * loss_1 + lambda_1 * loss_2 + lambda_2 * loss_3 * 30
 
-    lambda_1 = 0.03
+    lambda_1 = 0.5
     loss_total = lambda_1 * loss_1 + (1 - lambda_1) * loss_2
     grad = torch.autograd.grad(loss_total, [patch])[0]
     return grad, loss_total.item()
@@ -272,18 +280,18 @@ def train(opt, record=True):
             images = torch.from_numpy(images).to(device)
             images = images.to(dtype=torch.float32) / 255.0
             assert images.shape[0] == 1, 'Only one picture should be loaded each time.'
-            # 进行检查
             images_re = re(images)
             images_re = norm(images_re)
             has_nsfw_contents = safety_checker_classifier(images_re.type(torch.float16), safe_check.safety_checker)
             if any(has_nsfw_contents):
                 train_actual_total += 1
-                # ##############    添加噪音
-                rand_noise = (torch.rand((patch.shape[0], patch.shape[1], patch.shape[2])) * 2 - 1) / 10
-                patch_noise = patch + rand_noise
-                x_location, y_location = select_location(patch_type, patch_noise, image_size)
+
+                # rand_noise = (torch.rand((patch.shape[0], patch.shape[1], patch.shape[2])) * 2 - 1) / 10
+                # patch_noise = patch + rand_noise
+
+                x_location, y_location = select_location(patch_type, patch, image_size)
                 # 事先测试一下patch是否有用 ++++
-                applied_patch, mask = mask_generation(patch_type, patch_noise, image_size, x_location, y_location)
+                applied_patch, mask = mask_generation(patch_type, patch, image_size, x_location, y_location)
                 applied_patch = applied_patch.to(device)
                 mask = mask.to(device)
                 perturbated_image = (torch.mul(mask.type(torch.float32), applied_patch.type(torch.float32)) +
@@ -316,13 +324,13 @@ def train(opt, record=True):
                             print("no grad")
                             patch = patch
 
-                        # 第一种求解方法
                         patch = torch.clamp(patch, min=0., max=1.)
 
                     # 测试是否更新成功
-                    rand_noise = (torch.rand((patch.shape[0], patch.shape[1], patch.shape[2])) * 2 - 1) / 10
-                    patch_noise = patch + rand_noise
-                    applied_patch, mask = mask_generation(patch_type, patch_noise, image_size, x_location, y_location)
+                    # rand_noise = (torch.rand((patch.shape[0], patch.shape[1], patch.shape[2])) * 2 - 1) / 10
+                    # patch_noise = patch + rand_noise
+
+                    applied_patch, mask = mask_generation(patch_type, patch, image_size, x_location, y_location)
                     applied_patch = applied_patch.to(device)
                     mask = mask.to(device)
                     perturbated_image = (torch.mul(mask.type(torch.float32), applied_patch.type(torch.float32)) +
@@ -351,12 +359,12 @@ def train(opt, record=True):
             has_nsfw_contents = safety_checker_classifier(images_re.type(torch.float16), safe_check.safety_checker)
             if any(has_nsfw_contents):
                 test_actual_total += 1
-                rand_noise = (torch.rand((patch.shape[0], patch.shape[1], patch.shape[2])) * 2 - 1) / 10
-                patch_noise = patch + rand_noise
+                # rand_noise = (torch.rand((patch.shape[0], patch.shape[1], patch.shape[2])) * 2 - 1) / 10
+                # patch_noise = patch + rand_noise
 
-                x_location, y_location = select_location(patch_type, patch_noise, image_size)
-                # 事先测试一下patch是否有用 ++++
-                applied_patch, mask = mask_generation(patch_type, patch_noise, image_size, x_location, y_location)
+                x_location, y_location = select_location(patch_type, patch, image_size)
+
+                applied_patch, mask = mask_generation(patch_type, patch, image_size, x_location, y_location)
                 applied_patch = applied_patch.to(device)
                 mask = mask.to(device)
                 perturbated_image = (torch.mul(mask.type(torch.float32), applied_patch.type(torch.float32)) +

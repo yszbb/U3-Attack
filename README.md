@@ -97,33 +97,35 @@ We provide two datasets for reproduction and evaluation:
 
 ## Usage
 
-### 1. Train Paraphrase Set
+### Textual Modality
+#### 1. Train Paraphrase Set
 
 First, generate the NSFW concept for your target concept:
 
 ```bash
 python vec_gen.py --concept nudity --version 1-5-inpaint --dtype float16
 ```
-### 3. Evaluate Paraphrase Set
+#### 2. Evaluate Paraphrase Set
 
 #### For Inpainting Models:
 ```bash
 python test_total_UMMA.py 
 ```
 
-### 2. Train Adversarial Patch
+### Image Modality
+#### 1. Train Adversarial Patch
 
-#### Period One:
+##### Period One:
 ```bash
 python train_patch_period_one.py
 ```
 
-#### Period Two:
+##### Period Two:
 ```bash
 python train_patch_period_two.py --iter 10 --epsl2 16.0 -s 3 -n 4
 ```
 
-### 3. Evaluate Patch Performance
+#### 2. Evaluate Patch Performance
 
 #### For Inpainting Models:
 ```bash

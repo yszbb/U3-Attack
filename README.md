@@ -139,12 +139,6 @@ If you find our work helpful, please cite the following paper:
 
 ---
 
-## 📜 License
-
-This project is released under the MIT License.  
-Please see the [LICENSE](./LICENSE) file for more details.
-
----
 
 ## ✉️ Contact
 

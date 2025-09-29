@@ -50,7 +50,7 @@ git clone https://huggingface.co/openai/clip-vit-base-patch32
 ```bash
 cd universal-image-attack
 
-# Download universal attack weights
+# Download model weights
 # Link: https://pan.baidu.com/s/1cjtFmK8hqLcXLCUAFrKyZA?pwd=ys66
 
 # Download datasets:
@@ -78,38 +78,19 @@ pipe_inpaint = StableDiffusionInpaintPipeline.from_pretrained(
 ```
 ---
 
-## 📊 Dataset
-
-We provide two datasets for reproduction and evaluation:
-
-- **Phase I:**  
-  Due to sensitive content, this dataset is **not publicly available**.  
-  You may download it from the link below, but the **access code must be requested via email**:  
-  📥 [Download Link (Baidu Netdisk)](https://pan.baidu.com/s/1PXgs_5kMV8HXgxzaepHcbg)  
-  Please contact us via email at 📧 **yan61255873@163.com** to request the extraction code.
-
-- **Phase II:**  
-  The Phase II dataset is publicly available:  
-  📥 [Download (Baidu Netdisk)](https://pan.baidu.com/s/1OpbRNweuG_ATDwvzjOzodQ?pwd=ys66)  
-  Access code: `ys66`
----
-
 
 ## Usage
 
 ### Textual Modality
 #### 1. Train Paraphrase Set
 
-First, generate the NSFW concept for your target concept:
-
 ```bash
-python vec_gen.py --concept nudity --version 1-5-inpaint --dtype float16
+python train_universal_paraphrase.py
 ```
 #### 2. Evaluate Paraphrase Set
 
-#### For Inpainting Models:
 ```bash
-python test_total_UMMA.py 
+python sd_test.py
 ```
 
 ### Image Modality

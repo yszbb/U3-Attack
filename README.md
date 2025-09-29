@@ -45,13 +45,26 @@ git clone https://huggingface.co/openai/clip-vit-base-patch32
 # Link: https://pan.baidu.com/s/12R7RpUf2XsiNUgLDOW8LxA?pwd=ys66
 ```
 
-3. **Download weights:**
+3. **Download attack weights and datasets:**
 
 ```bash
 cd universal-image-attack
 
 # Download universal attack weights
 # Link: https://pan.baidu.com/s/1cjtFmK8hqLcXLCUAFrKyZA?pwd=ys66
+
+# Download datasets:
+
+# Phase I:
+# Due to sensitive content, this dataset is not publicly available.
+# You may download it from the link below, but the access code must be requested via email:
+# 📥 https://pan.baidu.com/s/1PXgs_5kMV8HXgxzaepHcbg
+# Please contact 📧 yan61255873@163.com to request the extraction code.
+
+# Phase II:
+# Publicly available dataset:
+# 📥 https://pan.baidu.com/s/1OpbRNweuG_ATDwvzjOzodQ?pwd=ys66
+# Access code: ys66
 ```
 
 4. **Load the diffusion model:**
@@ -63,7 +76,6 @@ pipe_inpaint = StableDiffusionInpaintPipeline.from_pretrained(
     "/checkpoints/stable-diffusion-inpainting"
 ).to(device)
 ```
-
 ---
 
 ## 📊 Dataset
